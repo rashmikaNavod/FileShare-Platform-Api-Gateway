@@ -3,6 +3,7 @@ package lk.ijse.eca.apigateway.filter;
 import lk.ijse.eca.apigateway.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -15,12 +16,12 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
 import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@NullMarked
 public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     private final JwtUtil jwtUtil;
@@ -36,13 +37,13 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
         if (!exchange.getRequest().getHeaders().containsHeader("Authorization")) {
             log.error("Missing Authorization Header");
-            return onError(exchange, "Authorization header is missing in your request", HttpStatus.UNAUTHORIZED);
+            return onError(exchange, "Authorization header is missing in your request");
         }
 
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             log.error("Invalid Authorization header format");
-            return onError(exchange, "Invalid Authorization header format. Expected; 'Bearer <token>'", HttpStatus.UNAUTHORIZED);
+            return onError(exchange, "Invalid Authorization header format. Expected; 'Bearer <token>'");
         }
 
         String token = authHeader.substring(7);
@@ -61,7 +62,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
         } catch (Exception e) {
             log.error("Invalid Token: {}", e.getMessage());
-            return onError(exchange, "Invalid or Expired JWT Token", HttpStatus.UNAUTHORIZED);
+            return onError(exchange, "Invalid or Expired JWT Token");
         }
     }
 
@@ -70,14 +71,14 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         return -1;
     }
 
-    private Mono<Void> onError(ServerWebExchange exchange, String message, HttpStatus status) {
+    private Mono<Void> onError(ServerWebExchange exchange, String message) {
         ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(status);
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
 
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
         String errorResponse = String.format("{\"status\": %d, \"error\": \"%s\", \"message\": \"%s\"}",
-                status.value(), status.getReasonPhrase(), message);
+                HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), message);
 
         DataBuffer buffer = response.bufferFactory().wrap(errorResponse.getBytes(StandardCharsets.UTF_8));
 
