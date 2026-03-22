@@ -31,7 +31,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
         String path = exchange.getRequest().getPath().toString();
 
-        if(path.contains("/api/v1/users") || path.contains("/api/v1/users/login")) {
+        if(path.contains("/api/v1/users") ||
+           path.contains("/api/v1/files/details") ||
+           path.contains("/api/v1/files/preview")) {
             return chain.filter(exchange);
         }
 
