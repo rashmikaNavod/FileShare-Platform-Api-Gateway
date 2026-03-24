@@ -7,4 +7,4 @@ spring:
 
   cloud:
     config:
-      uri: http://localhost:9000
+      uri: http://10.148.0.15:9000
