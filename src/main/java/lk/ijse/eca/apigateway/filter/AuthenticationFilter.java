@@ -31,6 +31,11 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
         String path = exchange.getRequest().getPath().toString();
 
+        // 1. OPTIONS Request skip කිරීම (CORS සඳහා අනිවාර්යයි)
+        if (exchange.getRequest().getMethod().name().equals("OPTIONS")) {
+            return chain.filter(exchange);
+        }
+
         if(path.contains("/api/v1/users") ||
            path.contains("/api/v1/files/details") ||
            path.contains("/api/v1/files/preview")) {
