@@ -23,7 +23,7 @@ public class CorsConfig {
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
         // ඉඩ ලබා දෙන Headers
-        corsConfig.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"));
+        corsConfig.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin", "X-Logged-In-User"));
 
         // Credentials (Cookies/Auth headers) වලට ඉඩ දීම
         corsConfig.setAllowCredentials(true);
