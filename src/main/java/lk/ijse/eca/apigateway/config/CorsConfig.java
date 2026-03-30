@@ -16,7 +16,7 @@ public class CorsConfig {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
         // ඉඩ ලබා දෙන origin එක (localhost:3000)
-        corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        corsConfig.setAllowedOriginPatterns(Collections.singletonList("*"));
         corsConfig.setMaxAge(3600L); // Preflight response එක cache කිරීමට කාලය
 
         // ඉඩ ලබා දෙන Methods
